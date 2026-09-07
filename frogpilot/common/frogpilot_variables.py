@@ -555,7 +555,10 @@ class FrogPilotVariables:
       HARDWARE.reboot()
 
     for k, v, _, _ in frogpilot_default_params:
-      params_default.put(k, v)
+      try:
+        params_default.put(k, v)
+      except Exception:
+        pass
 
     params_memory.put("FrogPilotTuningLevels", json.dumps(self.tuning_levels))
 
