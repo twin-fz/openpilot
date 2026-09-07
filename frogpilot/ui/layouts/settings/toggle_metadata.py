@@ -293,6 +293,13 @@ ALERTS_AND_SOUNDS_TOGGLES = (
     tuning_level=0,
   ),
   ToggleDefinition(
+    title=("Red Light Alert"),
+    param="RedLightAlert",
+    description=("<b>Play an alert when a red light is detected and the car is moving forward.</b><br><br><i><b>Disclaimer</b>: openpilot does not explicitly detect traffic lights. This alert is based on end-to-end model predictions from camera input and may trigger even when there is no red light.</i>"),
+    parent_param="CustomAlerts",
+    tuning_level=0,
+  ),
+  ToggleDefinition(
     title=("Speed Limit Changed Alert"),
     param="SpeedLimitChangedAlert",
     depends_on=["ShowSpeedLimits", "SpeedLimitController"],

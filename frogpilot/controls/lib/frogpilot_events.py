@@ -24,6 +24,7 @@ class FrogPilotEvents:
     self.always_on_lateral_enabled_previously = False
     self.previous_traffic_mode = False
     self.random_event_playing = False
+    self.red_light_alert_played = False
     self.startup_seen = False
     self.stopped_for_light = False
 
@@ -66,6 +67,16 @@ class FrogPilotEvents:
 
     if self.frogpilot_planner.frogpilot_vcruise.forcing_stop:
       self.events.add(FrogPilotEventName.forcingStop)
+
+    red_light = self.frogpilot_planner.cem.stop_light_detected or (self.stopped_for_light and self.frogpilot_planner.model_stopped)
+    moving_forward = not sm["carState"].standstill and sm["carState"].gearShifter not in NON_DRIVING_GEARS and sm["carState"].vEgo > 0.5
+
+    if moving_forward and red_light and frogpilot_toggles.red_light_alert:
+      if not self.red_light_alert_played:
+        self.events.add(FrogPilotEventName.redLight)
+        self.red_light_alert_played = True
+    elif sm["carState"].standstill or not red_light:
+      self.red_light_alert_played = False
 
     if not self.frogpilot_planner.tracking_lead and sm["carState"].standstill and sm["carState"].gearShifter not in NON_DRIVING_GEARS:
       if not self.frogpilot_planner.model_stopped and self.stopped_for_light and frogpilot_toggles.green_light_alert:

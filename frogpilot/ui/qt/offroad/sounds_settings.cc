@@ -56,6 +56,7 @@ FrogPilotSoundsPanel::FrogPilotSoundsPanel(FrogPilotSettingsWindow *parent) : Fr
     {"GreenLightAlert", tr("Green Light Alert"), tr("<b>Play an alert when the model predicts a red light has turned green.</b><br><br><i><b>Disclaimer</b>: openpilot does not explicitly detect traffic lights. This alert is based on end-to-end model predictions from camera input and may trigger even when the light has not changed.</i>"), ""},
     {"LeadDepartingAlert", tr("Lead Departing Alert"), tr("<b>Play an alert when the lead vehicle departs from a stop.</b>"), ""},
     {"LoudBlindspotAlert", tr("Loud \"Car Detected in Blindspot\" Alert"), tr("<b>Play a louder alert if a vehicle is in the blind spot when attempting to change lanes.</b> Based on the \"Car Detected in Blindspot\" event."), ""},
+    {"RedLightAlert", tr("Red Light Alert"), tr("<b>Play an alert when a red light is detected and the car is moving forward.</b><br><br><i><b>Disclaimer</b>: openpilot does not explicitly detect traffic lights. This alert is based on end-to-end model predictions from camera input and may trigger even when there is no red light.</i>"), ""},
     {"SpeedLimitChangedAlert", tr("Speed Limit Changed Alert"), tr("<b>Play an alert when the posted speed limit changes.</b>"), ""}
   };
 

@@ -1116,6 +1116,14 @@ FROGPILOT_EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
       Priority.HIGH, VisualAlert.wrongGear, AudibleAlert.promptRepeat, 4.),
   },
 
+  FrogPilotEventName.redLight: {
+    ET.PERMANENT: Alert(
+      "Red light detected",
+      "",
+      FrogPilotAlertStatus.frogpilot, AlertSize.small,
+      Priority.MID, VisualAlert.none, AudibleAlert.warningSoft, 3.),
+  },
+
   FrogPilotEventName.speedLimitChanged: {
     ET.PERMANENT: Alert(
       "Speed limit changed",
