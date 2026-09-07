@@ -17,7 +17,7 @@ DriveStats::DriveStats(QWidget *parent) : QFrame(parent) {
 
   addStatsLayouts(konik ? tr("ALL TIME (KONIK)") : tr("ALL TIME"), all);
   addStatsLayouts(konik ? tr("PAST WEEK (KONIK)") : tr("PAST WEEK"), week);
-  addStatsLayouts(tr("FROGPILOT"), frogPilot, true);
+  addStatsLayouts(getBrand().toUpper(), frogPilot, true);
 
   std::optional<QString> dongleId = getDongleId();
   if (dongleId.has_value()) {
