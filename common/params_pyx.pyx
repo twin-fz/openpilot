@@ -110,13 +110,10 @@ cdef class Params:
     Use the put_nonblocking, put_bool_nonblocking in time sensitive code, but
     in general try to avoid writing params as much as possible.
     """
-    try:
-      cdef string k = self.check_key(key)
-      cdef string dat_bytes = ensure_bytes(dat)
-      with nogil:
-        self.p.put(k, dat_bytes)
-    except Exception:
-      pass  
+    cdef string k = self.check_key(key)
+    cdef string dat_bytes = ensure_bytes(dat)
+    with nogil:
+      self.p.put(k, dat_bytes)  
 
   def put_bool(self, key, bool val):
     cdef string k = self.check_key(key)
