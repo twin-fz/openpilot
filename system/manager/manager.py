@@ -60,14 +60,17 @@ def manager_init() -> None:
     if (reset_toggles or reset_toggles_stock) and k in EXCLUDED_KEYS:
       continue
 
-    if params.get(k) is None or reset_toggles or reset_toggles_stock:
-      if params_cache.get(k) is None or reset_toggles or reset_toggles_stock:
-        params.put(k, v if not reset_toggles_stock else stock)
-        params_cache.remove(k)
+    try:
+      if params.get(k) is None or reset_toggles or reset_toggles_stock:
+        if params_cache.get(k) is None or reset_toggles or reset_toggles_stock:
+          params.put(k, v if not reset_toggles_stock else stock)
+          params_cache.remove(k)
+        else:
+          params.put(k, params_cache.get(k))
       else:
-        params.put(k, params_cache.get(k))
-    else:
-      params_cache.put(k, params.get(k))
+        params_cache.put(k, params.get(k))
+    except Exception:
+      pass
   params.remove("DoToggleReset")
   params.remove("DoToggleResetStock")
 
