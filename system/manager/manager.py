@@ -225,10 +225,8 @@ def main() -> None:
       subprocess.run(["scons", "-c", "common/"], cwd=BASEDIR, check=True)
       subprocess.run(["scons", "common/"], cwd=BASEDIR, check=True)
 
-    with TextWindow("This takes ~30 mins, and will reboot when done.\n\nRebuilding selfdrive/ui/ui..."):
+    with TextWindow("This may take ~30 mins, and will reboot when done.\n\nRebuilding selfdrive/ui/ui..."):
       subprocess.run(["scons", "selfdrive/ui/ui"], cwd=BASEDIR, check=True)
-
-    with TextWindow("Rebuild complete.\n\nRebooting..."):
       HARDWARE.reboot()
 
   if os.getenv("PREPAREONLY") is not None:
