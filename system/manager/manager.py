@@ -221,14 +221,15 @@ def main() -> None:
   try:
     manager_init()
   except UnknownKeyName:
-    with TextWindow("Manager detected an incompatible parameter schema.\n\nRebuilding openpilot..."):
-      rebuild_targets = ["common/", "selfdrive/ui/ui"]
-      subprocess.run(["scons", "-c", *rebuild_targets], cwd=BASEDIR, check=True)
-      subprocess.run(["scons", "-u", *rebuild_targets], cwd=BASEDIR, check=True)
+    with TextWindow("Manager detected an incompatible parameter schema.\n\nRebuilding common/..."):
+      subprocess.run(["scons", "-c", "common/"], cwd=BASEDIR, check=True)
+      subprocess.run(["scons", "common/"], cwd=BASEDIR, check=True)
 
-    with TextWindow("Rebuild complete.\n\nPlease unplug the device to reboot it."):
-      while True:
-        time.sleep(1)
+    with TextWindow("This takes ~30 mins, and will reboot when done.\n\nRebuilding selfdrive/ui/ui..."):
+      subprocess.run(["scons", "selfdrive/ui/ui"], cwd=BASEDIR, check=True)
+
+    with TextWindow("Rebuild complete.\n\nRebooting..."):
+      HARDWARE.reboot()
 
   if os.getenv("PREPAREONLY") is not None:
     return
