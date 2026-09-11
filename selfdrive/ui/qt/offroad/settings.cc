@@ -449,7 +449,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {tr("Network"), new Networking(this)},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
-    {tr("FrogPilot"), frogpilotSettingsWindow},
+    {getBrand(), frogpilotSettingsWindow},
   };
 
   nav_btns = new QButtonGroup(this);
@@ -492,18 +492,18 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
 
           if (frogpilotHours < 1 && openpilotHours < 100) {
             if (openpilotHours < 10) {
-              if (ConfirmationDialog::alert(tr("Welcome to FrogPilot! Since you're new to openpilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!"), this, true)) {
+              if (ConfirmationDialog::alert(tr("Welcome to %1! Since you're new to openpilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!").arg(getBrand()), this, true)) {
                 params.putBool("TuningLevelConfirmed", true);
                 params.putInt("TuningLevel", 0);
               }
             } else {
-              if (ConfirmationDialog::alert(tr("Welcome to FrogPilot! Since you're new to FrogPilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!"), this, true)) {
+              if (ConfirmationDialog::alert(tr("Welcome to %1! Since you're new to %1, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!").arg(getBrand()), this, true)) {
                 params.putBool("TuningLevelConfirmed", true);
                 params.putInt("TuningLevel", 0);
               }
             }
           } else if (frogpilotHours < 50 && openpilotHours < 100) {
-            if (ConfirmationDialog::alert(tr("Since you're fairly new to FrogPilot, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!"), this, true)) {
+            if (ConfirmationDialog::alert(tr("Since you're fairly new to %1, the \"Minimal\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!").arg(getBrand()), this, true)) {
               params.putBool("TuningLevelConfirmed", true);
               params.putInt("TuningLevel", 0);
             }
@@ -514,13 +514,13 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
                 params.putInt("TuningLevel", 1);
               }
             } else {
-              if (ConfirmationDialog::alert(tr("Since you're experienced with FrogPilot, the \"Standard\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!"), this, true)) {
+              if (ConfirmationDialog::alert(tr("Since you're experienced with %1, the \"Standard\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!").arg(getBrand()), this, true)) {
                 params.putBool("TuningLevelConfirmed", true);
                 params.putInt("TuningLevel", 1);
               }
             }
           } else if (frogpilotHours >= 100) {
-            if (ConfirmationDialog::alert(tr("Since you're very experienced with FrogPilot, the \"Advanced\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!"), this, true)) {
+            if (ConfirmationDialog::alert(tr("Since you're very experienced with %1, the \"Advanced\" toggle preset has been applied, but you can change this at any time via the \"Tuning Level\" button!").arg(getBrand()), this, true)) {
               params.putBool("TuningLevelConfirmed", true);
               params.putInt("TuningLevel", 2);
             }

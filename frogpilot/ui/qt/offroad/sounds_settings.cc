@@ -51,11 +51,12 @@ FrogPilotSoundsPanel::FrogPilotSoundsPanel(FrogPilotSettingsWindow *parent) : Fr
     {"WarningSoftVolume", tr("Warning Soft Volume"), tr("<b>Set the volume for softer warnings about potential risks.</b><br><br>Examples include: \"BRAKE! Risk of Collision\", \"Steering Temporarily Unavailable\"."), ""},
     {"WarningImmediateVolume", tr("Warning Immediate Volume"), tr("<b>Set the volume for the loudest warnings that require urgent attention.</b><br><br>Examples include: \"DISENGAGE IMMEDIATELY — Driver Distracted\", \"DISENGAGE IMMEDIATELY — Driver Unresponsive\"."), ""},
 
-    {"CustomAlerts", tr("FrogPilot Alerts"), tr("<b>Optional FrogPilot alerts</b> that highlight driving events in a more noticeable way."), "../../frogpilot/assets/toggle_icons/icon_green_light.png"},
+    {"CustomAlerts", tr("%1 Alerts").arg(getBrand()), tr("<b>Optional %1 alerts</b> that highlight driving events in a more noticeable way.").arg(getBrand()), "../../frogpilot/assets/toggle_icons/icon_green_light.png"},
     {"GoatScream", tr("Goat Scream"), tr("<b>Play the infamous \"Goat Scream\" when the steering controller reaches its limit.</b> Based on the \"Turn Exceeds Steering Limit\" event."), ""},
     {"GreenLightAlert", tr("Green Light Alert"), tr("<b>Play an alert when the model predicts a red light has turned green.</b><br><br><i><b>Disclaimer</b>: openpilot does not explicitly detect traffic lights. This alert is based on end-to-end model predictions from camera input and may trigger even when the light has not changed.</i>"), ""},
     {"LeadDepartingAlert", tr("Lead Departing Alert"), tr("<b>Play an alert when the lead vehicle departs from a stop.</b>"), ""},
     {"LoudBlindspotAlert", tr("Loud \"Car Detected in Blindspot\" Alert"), tr("<b>Play a louder alert if a vehicle is in the blind spot when attempting to change lanes.</b> Based on the \"Car Detected in Blindspot\" event."), ""},
+    {"RedLightAlert", tr("Red Light Alert"), tr("<b>Play an alert when a red light is detected and the car is moving forward.</b><br><br><i><b>Disclaimer</b>: openpilot does not explicitly detect traffic lights. This alert is based on end-to-end model predictions from camera input and may trigger even when there is no red light.</i>"), ""},
     {"SpeedLimitChangedAlert", tr("Speed Limit Changed Alert"), tr("<b>Play an alert when the posted speed limit changes.</b>"), ""}
   };
 

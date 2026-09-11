@@ -469,6 +469,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"ReduceLateralAccelerationRain", PERSISTENT},
     {"ReduceLateralAccelerationRainStorm", PERSISTENT},
     {"ReduceLateralAccelerationSnow", PERSISTENT},
+    {"RedLightAlert", PERSISTENT},
     {"RefuseVolume", PERSISTENT},
     {"RelaxedFollow", PERSISTENT},
     {"RelaxedJerkAcceleration", PERSISTENT},

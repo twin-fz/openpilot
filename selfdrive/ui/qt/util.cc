@@ -12,26 +12,23 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLayoutItem>
-#include <QStyleOption>
 #include <QPainterPath>
+#include <QStyleOption>
 #include <QTextStream>
 #include <QtXml/QDomDocument>
+
 
 #include "common/swaglog.h"
 #include "system/hardware/hw.h"
 
 QString getVersion() {
-  static QString version =  QString::fromStdString(Params().get("Version"));
+  static QString version = QString::fromStdString(Params().get("Version"));
   return version;
 }
 
-QString getBrand() {
-  return QObject::tr("FrogPilot");
-}
+QString getBrand() { return QObject::tr("TwinPilot"); }
 
-QString getUserAgent() {
-  return "openpilot-" + getVersion();
-}
+QString getUserAgent() { return "openpilot-" + getVersion(); }
 
 std::optional<QString> getDongleId() {
   std::string id = Params().get("DongleId");
@@ -89,7 +86,9 @@ void setQtSurfaceFormat() {
 #endif
   fmt.setSamples(16);
   fmt.setStencilBufferSize(1);
-  // swap interval 0: a vsync-throttled swap blocks forever if weston (1.9, no pageflip-timeout) drops a pageflip and never releases the buffer, hanging the UI until the watchdog kills it
+  // swap interval 0: a vsync-throttled swap blocks forever if weston (1.9, no
+  // pageflip-timeout) drops a pageflip and never releases the buffer, hanging
+  // the UI until the watchdog kills it
   fmt.setSwapInterval(0);
   QSurfaceFormat::setDefaultFormat(fmt);
 }
@@ -113,7 +112,8 @@ void initApp(int argc, char *argv[], bool disable_hidpi) {
   QApplication tmp(argc, argv);
   app_dir = QCoreApplication::applicationDirPath();
   if (disable_hidpi) {
-    qputenv("QT_SCALE_FACTOR", QString::number(1.0 / tmp.devicePixelRatio()).toLocal8Bit());
+    qputenv("QT_SCALE_FACTOR",
+            QString::number(1.0 / tmp.devicePixelRatio()).toLocal8Bit());
   }
 #else
   app_dir = QFileInfo(util::readlink("/proc/self/exe").c_str()).path();
@@ -126,39 +126,47 @@ void initApp(int argc, char *argv[], bool disable_hidpi) {
   setQtSurfaceFormat();
 }
 
-void swagLogMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+void swagLogMessageHandler(QtMsgType type, const QMessageLogContext &context,
+                           const QString &msg) {
   static std::map<QtMsgType, int> levels = {
-    {QtMsgType::QtDebugMsg, CLOUDLOG_DEBUG},
-    {QtMsgType::QtInfoMsg, CLOUDLOG_INFO},
-    {QtMsgType::QtWarningMsg, CLOUDLOG_WARNING},
-    {QtMsgType::QtCriticalMsg, CLOUDLOG_ERROR},
-    {QtMsgType::QtSystemMsg, CLOUDLOG_ERROR},
-    {QtMsgType::QtFatalMsg, CLOUDLOG_CRITICAL},
+      {QtMsgType::QtDebugMsg, CLOUDLOG_DEBUG},
+      {QtMsgType::QtInfoMsg, CLOUDLOG_INFO},
+      {QtMsgType::QtWarningMsg, CLOUDLOG_WARNING},
+      {QtMsgType::QtCriticalMsg, CLOUDLOG_ERROR},
+      {QtMsgType::QtSystemMsg, CLOUDLOG_ERROR},
+      {QtMsgType::QtFatalMsg, CLOUDLOG_CRITICAL},
   };
 
   std::string file, function;
-  if (context.file != nullptr) file = context.file;
-  if (context.function != nullptr) function = context.function;
+  if (context.file != nullptr)
+    file = context.file;
+  if (context.function != nullptr)
+    function = context.function;
 
   auto bts = msg.toUtf8();
-  cloudlog_e(levels[type], file.c_str(), context.line, function.c_str(), "%s", bts.constData());
+  cloudlog_e(levels[type], file.c_str(), context.line, function.c_str(), "%s",
+             bts.constData());
 }
 
-
-QWidget* topWidget(QWidget* widget) {
-  while (widget->parentWidget() != nullptr) widget=widget->parentWidget();
+QWidget *topWidget(QWidget *widget) {
+  while (widget->parentWidget() != nullptr)
+    widget = widget->parentWidget();
   return widget;
 }
 
-QPixmap loadPixmap(const QString &fileName, const QSize &size, Qt::AspectRatioMode aspectRatioMode) {
+QPixmap loadPixmap(const QString &fileName, const QSize &size,
+                   Qt::AspectRatioMode aspectRatioMode) {
   if (size.isEmpty()) {
     return QPixmap(fileName);
   } else {
-    return QPixmap(fileName).scaled(size, aspectRatioMode, Qt::SmoothTransformation);
+    return QPixmap(fileName).scaled(size, aspectRatioMode,
+                                    Qt::SmoothTransformation);
   }
 }
 
-void drawRoundedRect(QPainter &painter, const QRectF &rect, qreal xRadiusTop, qreal yRadiusTop, qreal xRadiusBottom, qreal yRadiusBottom){
+void drawRoundedRect(QPainter &painter, const QRectF &rect, qreal xRadiusTop,
+                     qreal yRadiusTop, qreal xRadiusBottom,
+                     qreal yRadiusBottom) {
   qreal w_2 = rect.width() / 2;
   qreal h_2 = rect.height() / 2;
 
@@ -173,18 +181,19 @@ void drawRoundedRect(QPainter &painter, const QRectF &rect, qreal xRadiusTop, qr
   qreal w = rect.width();
   qreal h = rect.height();
 
-  qreal rxx2Top = w*xRadiusTop/100;
-  qreal ryy2Top = h*yRadiusTop/100;
+  qreal rxx2Top = w * xRadiusTop / 100;
+  qreal ryy2Top = h * yRadiusTop / 100;
 
-  qreal rxx2Bottom = w*xRadiusBottom/100;
-  qreal ryy2Bottom = h*yRadiusBottom/100;
+  qreal rxx2Bottom = w * xRadiusBottom / 100;
+  qreal ryy2Bottom = h * yRadiusBottom / 100;
 
   QPainterPath path;
   path.arcMoveTo(x, y, rxx2Top, ryy2Top, 180);
   path.arcTo(x, y, rxx2Top, ryy2Top, 180, -90);
-  path.arcTo(x+w-rxx2Top, y, rxx2Top, ryy2Top, 90, -90);
-  path.arcTo(x+w-rxx2Bottom, y+h-ryy2Bottom, rxx2Bottom, ryy2Bottom, 0, -90);
-  path.arcTo(x, y+h-ryy2Bottom, rxx2Bottom, ryy2Bottom, 270, -90);
+  path.arcTo(x + w - rxx2Top, y, rxx2Top, ryy2Top, 90, -90);
+  path.arcTo(x + w - rxx2Bottom, y + h - ryy2Bottom, rxx2Bottom, ryy2Bottom, 0,
+             -90);
+  path.arcTo(x, y + h - ryy2Bottom, rxx2Bottom, ryy2Bottom, 270, -90);
   path.closeSubpath();
 
   painter.drawPath(path);
@@ -196,19 +205,26 @@ QColor interpColor(float xv, std::vector<float> xp, std::vector<QColor> fp) {
   int N = xp.size();
   int hi = 0;
 
-  while (hi < N and xv > xp[hi]) hi++;
+  while (hi < N and xv > xp[hi])
+    hi++;
   int low = hi - 1;
 
   if (hi == N && xv > xp[low]) {
     return fp[fp.size() - 1];
-  } else if (hi == 0){
+  } else if (hi == 0) {
     return fp[0];
   } else {
     return QColor(
-      (xv - xp[low]) * (fp[hi].red() - fp[low].red()) / (xp[hi] - xp[low]) + fp[low].red(),
-      (xv - xp[low]) * (fp[hi].green() - fp[low].green()) / (xp[hi] - xp[low]) + fp[low].green(),
-      (xv - xp[low]) * (fp[hi].blue() - fp[low].blue()) / (xp[hi] - xp[low]) + fp[low].blue(),
-      (xv - xp[low]) * (fp[hi].alpha() - fp[low].alpha()) / (xp[hi] - xp[low]) + fp[low].alpha());
+        (xv - xp[low]) * (fp[hi].red() - fp[low].red()) / (xp[hi] - xp[low]) +
+            fp[low].red(),
+        (xv - xp[low]) * (fp[hi].green() - fp[low].green()) /
+                (xp[hi] - xp[low]) +
+            fp[low].green(),
+        (xv - xp[low]) * (fp[hi].blue() - fp[low].blue()) / (xp[hi] - xp[low]) +
+            fp[low].blue(),
+        (xv - xp[low]) * (fp[hi].alpha() - fp[low].alpha()) /
+                (xp[hi] - xp[low]) +
+            fp[low].alpha());
   }
 }
 
@@ -247,27 +263,31 @@ QPixmap bootstrapPixmap(const QString &id) {
 }
 
 bool hasLongitudinalControl(const cereal::CarParams::Reader &car_params) {
-  // Using the experimental longitudinal toggle, returns whether longitudinal control
-  // will be active without needing a restart of openpilot
+  // Using the experimental longitudinal toggle, returns whether longitudinal
+  // control will be active without needing a restart of openpilot
   Params params = Params();
   return (car_params.getExperimentalLongitudinalAvailable()
-             ? params.getBool("ExperimentalLongitudinalEnabled")
-             : car_params.getOpenpilotLongitudinalControl()) && !params.getBool("DisableOpenpilotLongitudinal");
+              ? params.getBool("ExperimentalLongitudinalEnabled")
+              : car_params.getOpenpilotLongitudinalControl()) &&
+         !params.getBool("DisableOpenpilotLongitudinal");
 }
 
 // ParamWatcher
 
 ParamWatcher::ParamWatcher(QObject *parent) : QObject(parent) {
   watcher = new QFileSystemWatcher(this);
-  QObject::connect(watcher, &QFileSystemWatcher::fileChanged, this, &ParamWatcher::fileChanged);
+  QObject::connect(watcher, &QFileSystemWatcher::fileChanged, this,
+                   &ParamWatcher::fileChanged);
 }
 
 void ParamWatcher::fileChanged(const QString &path) {
   auto param_name = QFileInfo(path).fileName();
-  auto param_value = QString::fromStdString(params.get(param_name.toStdString()));
+  auto param_value =
+      QString::fromStdString(params.get(param_name.toStdString()));
 
   auto it = params_hash.find(param_name);
-  bool content_changed = (it == params_hash.end()) || (it.value() != param_value);
+  bool content_changed =
+      (it == params_hash.end()) || (it.value() != param_value);
   params_hash[param_name] = param_value;
   // emit signal when the content changes.
   if (content_changed) {
@@ -276,5 +296,6 @@ void ParamWatcher::fileChanged(const QString &path) {
 }
 
 void ParamWatcher::addParam(const QString &param_name) {
-  watcher->addPath(QString::fromStdString(params.getParamPath(param_name.toStdString())));
+  watcher->addPath(
+      QString::fromStdString(params.getParamPath(param_name.toStdString())));
 }

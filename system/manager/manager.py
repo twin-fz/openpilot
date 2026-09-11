@@ -2,13 +2,16 @@
 import datetime
 import os
 import signal
+import subprocess
 import sys
+import time
 import traceback
 
 from cereal import log
 import cereal.messaging as messaging
 import openpilot.system.sentry as sentry
-from openpilot.common.params import Params, ParamKeyType
+from openpilot.common.basedir import BASEDIR
+from openpilot.common.params import Params, ParamKeyType, UnknownKeyName
 from openpilot.common.text_window import TextWindow
 from openpilot.system.hardware import HARDWARE, PC
 from openpilot.system.manager.helpers import unblock_stdout, write_onroad_params, save_bootlog
@@ -215,7 +218,18 @@ def manager_thread() -> None:
       frogpilot_toggles = get_frogpilot_toggles()
 
 def main() -> None:
-  manager_init()
+  try:
+    manager_init()
+  except UnknownKeyName:
+    with TextWindow("Manager detected an incompatible parameter schema.\n\nRebuilding openpilot..."):
+      rebuild_targets = ["common/", "selfdrive/ui/ui"]
+      subprocess.run(["scons", "-c", *rebuild_targets], cwd=BASEDIR, check=True)
+      subprocess.run(["scons", "-u", *rebuild_targets], cwd=BASEDIR, check=True)
+
+    with TextWindow("Rebuild complete.\n\nPlease unplug the device to reboot it."):
+      while True:
+        time.sleep(1)
+
   if os.getenv("PREPAREONLY") is not None:
     return
 
