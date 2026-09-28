@@ -309,6 +309,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int, str]] = [
   ("LeadDepartingAlert", "0", 0, "0"),
   ("LeadDetectionThreshold", "35", 3, "50"),
   ("LeadInfo", "1", 3, "0"),
+  ("LicensePlateDetector", "0", 0, "0"),
   ("LiveDelay", "", 0, ""),
   ("LKASButtonControl", "5", 2, "0"),
   ("LockDoors", "1", 0, "0"),
@@ -723,6 +724,7 @@ class FrogPilotVariables:
     toggle.lead_departing_alert = toggle.custom_alerts and (params.get_bool("LeadDepartingAlert") if toggle.tuning_level >= level["LeadDepartingAlert"] else default.get_bool("LeadDepartingAlert"))
     toggle.loud_blindspot_alert = has_bsm and toggle.custom_alerts and (params.get_bool("LoudBlindspotAlert") if toggle.tuning_level >= level["LoudBlindspotAlert"] else default.get_bool("LoudBlindspotAlert"))
     toggle.red_light_alert = toggle.custom_alerts and (params.get_bool("RedLightAlert") if toggle.tuning_level >= level["RedLightAlert"] else default.get_bool("RedLightAlert"))
+    toggle.license_plate_detector = (params.get_bool("LicensePlateDetector") if toggle.tuning_level >= level["LicensePlateDetector"] else default.get_bool("LicensePlateDetector"))
     toggle.speed_limit_changed_alert = toggle.custom_alerts and (params.get_bool("SpeedLimitChangedAlert") if toggle.tuning_level >= level["SpeedLimitChangedAlert"] else default.get_bool("SpeedLimitChangedAlert"))
 
     toggle.custom_personalities = toggle.openpilot_longitudinal and params.get_bool("CustomPersonalities") if toggle.tuning_level >= level["CustomPersonalities"] else default.get_bool("CustomPersonalities")

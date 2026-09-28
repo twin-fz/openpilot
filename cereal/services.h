@@ -93,6 +93,7 @@ static std::map<std::string, service> services = {
   { "frogpilotOnroadEvents", {"frogpilotOnroadEvents", true, 1, 1}},
   { "frogpilotPlan", {"frogpilotPlan", true, 20, 5}},
   { "frogpilotRadarState", {"frogpilotRadarState", true, 20, 5}},
+  { "frogpilotDetections", {"frogpilotDetections", true, 5, 5}},
 };
 #endif
 

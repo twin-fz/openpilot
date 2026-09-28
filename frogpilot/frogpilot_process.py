@@ -74,8 +74,8 @@ def frogpilot_thread():
   sm = messaging.SubMaster(["carControl", "carState", "controlsState", "deviceState", "driverMonitoringState",
                             "liveLocationKalman", "liveParameters", "managerState", "modelV2", "onroadEvents",
                             "pandaStates", "radarState", "frogpilotCarState", "frogpilotControlsState",
-                            "frogpilotModelV2", "frogpilotNavigation", "frogpilotOnroadEvents"],
-                            poll="modelV2", ignore_avg_freq=["frogpilotRadarState"])
+                            "frogpilotModelV2", "frogpilotNavigation", "frogpilotOnroadEvents", "frogpilotDetections"],
+                            poll="modelV2", ignore_avg_freq=["frogpilotRadarState", "frogpilotDetections"])
 
   run_update_checks = False
   started_previously = False

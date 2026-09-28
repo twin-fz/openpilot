@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 
+from cereal import log
 from openpilot.common.conversions import Conversions as CV
 from openpilot.common.realtime import DT_MDL
 from openpilot.selfdrive.controls.lib.desire_helper import TurnDirection
@@ -68,7 +69,20 @@ class FrogPilotEvents:
     if self.frogpilot_planner.frogpilot_vcruise.forcing_stop:
       self.events.add(FrogPilotEventName.forcingStop)
 
-    red_light = self.frogpilot_planner.cem.stop_light_detected # or (self.stopped_for_light and self.frogpilot_planner.model_stopped)
+    detections = sm["frogpilotDetections"] if "frogpilotDetections" in sm.data and sm.valid["frogpilotDetections"] else None
+    vision_available = detections is not None and detections.modelLoaded
+
+    if vision_available:
+      # detectd is online and running with a loaded model: vision is the definitive authority!
+      vision_confirmed_red = detections.trafficLightState == log.FrogPilotDetections.TrafficLightState.red and detections.trafficLightConfidence >= 0.5
+      red_light = self.frogpilot_planner.cem.stop_light_detected and vision_confirmed_red
+    else:
+      # Fallback ONLY when detectd is completely offline or model weights are missing:
+      model_stopping_to_zero = sm["modelV2"].velocity.x[-1] < 1.5 if len(sm["modelV2"].velocity.x) > 0 else False
+      time_to_stop = self.frogpilot_planner.model_length / max(sm["carState"].vEgo, 1.0)
+      valid_stopping_envelope = 15.0 < self.frogpilot_planner.model_length < 120.0 and 1.5 < time_to_stop < 6.5 and sm["carState"].vEgo < 30.0
+      red_light = self.frogpilot_planner.cem.stop_light_detected and model_stopping_to_zero and valid_stopping_envelope
+
     moving_forward = not sm["carState"].standstill and sm["carState"].gearShifter not in NON_DRIVING_GEARS and sm["carState"].vEgo > 0.5
 
     if not frogpilot_toggles.red_light_alert or sm["carState"].standstill or not red_light:

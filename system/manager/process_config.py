@@ -63,6 +63,9 @@ def run_speed_limit_filler(started, params, CP: car.CarParams, classic_model, ti
 def run_tinygrad_modeld(started, params, CP: car.CarParams, classic_model, tinygrad_model, frogpilot_toggles) -> bool:
   return started and tinygrad_model
 
+def run_detectd(started, params, CP: car.CarParams, classic_model, tinygrad_model, frogpilot_toggles) -> bool:
+  return started and (frogpilot_toggles.red_light_alert or frogpilot_toggles.license_plate_detector)
+
 procs = [
   DaemonProcess("manage_athenad", "system.athena.manage_athenad", "AthenadPid"),
 
@@ -120,6 +123,7 @@ procs = [
   PythonProcess("speed_limit_filler", "frogpilot.system.speed_limit_filler", run_speed_limit_filler),
   PythonProcess("the_pond", "frogpilot.system.the_pond.the_pond", always_run),
   PythonProcess("tinygrad_modeld", "frogpilot.tinygrad_modeld.tinygrad_modeld", run_tinygrad_modeld),
+  PythonProcess("detectd", "frogpilot.system.detectd", run_detectd),
 ]
 
 managed_processes = {p.name: p for p in procs}

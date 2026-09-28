@@ -246,3 +246,31 @@ struct FrogPilotRadarState @0xcb9fd56c7057593a {
     aLeadDEPRECATED @5 :Float32;
   }
 }
+
+struct FrogPilotDetections @0xe718f45a192b0c44 {
+  frameId @0 :UInt32;
+  timestamp @1 :UInt64;
+  modelLoaded @2 :Bool;
+  scanning @7 :Bool;
+
+  # Traffic Light State
+  trafficLightState @3 :TrafficLightState;
+  trafficLightConfidence @4 :Float32;
+  trafficLightBox @5 :List(Float32); # [x, y, w, h] normalized
+
+  # License Plates
+  licensePlates @6 :List(LicensePlate);
+
+  enum TrafficLightState {
+    none @0;
+    red @1;
+    yellow @2;
+    green @3;
+  }
+
+  struct LicensePlate {
+    box @0 :List(Float32); # [x, y, w, h] normalized
+    confidence @1 :Float32;
+    text @2 :Text;
+  }
+}
